@@ -1,41 +1,40 @@
-[![Build Status](https://travis-ci.com/Otus-DevOps-2019-11/lebedevdg_infra.svg?branch=master)](https://travis-ci.com/Otus-DevOps-2019-11/lebedevdg_infra)
+[![Build Status](https://travis-ci.com/lebedevdg/ansible_role_db.svg?branch=master)](https://travis-ci.com/lebedevdg/ansible_role_db)
 
 
-Role Name
-=========
+# ansible_role_db
 
-A brief description of the role goes here.
+Example of external Ansible role with Molecule and Testinfra testing in GCE
 
-Requirements
-------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+ansible_role_db
+==
+
+Use this role to config MongoDB instance
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+defaults/main.yml:
 
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+```
+# MongoDB port and IP to listen to
+mongo_port: 27017
+mongo_bind_ip: 127.0.0.1
+# Environment (e.g., stage, prod)
+env: local
+```
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```
+- name: Configure MongoDB
+  hosts: db
+  become: true
+  vars:
+    mongo_port: 27017
+    mongo_bind_ip: 127.0.0.1
+    env: local
+  roles:
+    - ansible_role_db
+```
