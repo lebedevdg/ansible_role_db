@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/Otus-DevOps-2019-11/lebedevdg_infra.svg?branch=master)](https://travis-ci.com/Otus-DevOps-2019-11/lebedevdg_infra)
+
+
 Role Name
 =========
 

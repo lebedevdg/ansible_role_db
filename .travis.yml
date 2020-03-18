@@ -1,29 +1,27 @@
 ---
+
 language: python
-python: "2.7"
+python:
+  - '3.6'
 
-# Use the new container infrastructure
-sudo: false
-
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
+before_install:
+  - openssl aes-256-cbc -K $encrypted_ed371e731034_key -iv $encrypted_ed371e731034_iv -in gce.tar.enc -out gce.tar -d
+  - tar -xvf gce.tar && rm -f gce.tar
+  - mkdir -p ~/.gcp && mv -f ${GCE_SA_FILE} ~/.gcp && chmod 0600 ~/.gcp/${GCE_SA_FILE}
+  - mv -f ${GCE_SSH_FILE}* ~/.ssh && chmod 0600 ~/.ssh/${GCE_SSH_FILE}*
+  - pwd && ls -a
 
 install:
-  # Install ansible
-  - pip install ansible
+  - pip install -r requirements.txt
 
-  # Check ansible version
-  - ansible --version
-
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
+before_script:
+  - ansible --version && molecule --version
 
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+#  - molecule --debug test --destroy never
+  - molecule test --destroy never
 
-notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+after_script:
+#  - molecule --debug destroy
+  - molecule destroy
+  - rm -rf ~/.gcp && rm -f ~/.ssh/${GCE_SSH_FILE}*
