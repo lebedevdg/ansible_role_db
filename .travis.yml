@@ -7,7 +7,7 @@ before_install:
 - tar -xvf gce.tar && rm -f gce.tar
 - ls -la
 - chmod 0600 infra-265717-a32f80d8cfce.json
-- mv -f google_compute_engine ~/.ssh && chmod 0600 ~/.ssh/google_compute_engine
+- mv -f google_compute_engine* ~/.ssh && chmod 0600 ~/.ssh/google_compute_engine*
 - pwd && ls -a
 install:
 - pip install -r requirements.txt
