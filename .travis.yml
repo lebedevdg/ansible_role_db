@@ -1,27 +1,30 @@
----
-
 language: python
 python:
-  - '3.6'
-
+- '3.6'
 before_install:
-  - openssl aes-256-cbc -K $encrypted_ed371e731034_key -iv $encrypted_ed371e731034_iv -in gce.tar.enc -out gce.tar -d
-  - tar -xvf gce.tar && rm -f gce.tar
-  - mkdir -p ~/.gcp && mv -f ${GCE_SA_FILE} ~/.gcp && chmod 0600 ~/.gcp/${GCE_SA_FILE}
-  - mv -f ${GCE_SSH_FILE}* ~/.ssh && chmod 0600 ~/.ssh/${GCE_SSH_FILE}*
-  - pwd && ls -a
-
+- openssl aes-256-cbc -K $encrypted_ed371e731034_key -iv $encrypted_ed371e731034_iv
+  -in gce.tar.enc -out gce.tar -d
+- tar -xvf gce.tar && rm -f gce.tar
+- mkdir -p ~/.gcp && mv -f ${GCE_SA_FILE} ~/.gcp && chmod 0600 ~/.gcp/${GCE_SA_FILE}
+- mv -f ${GCE_SSH_FILE}* ~/.ssh && chmod 0600 ~/.ssh/${GCE_SSH_FILE}*
+- pwd && ls -a
 install:
-  - pip install -r requirements.txt
-
+- pip install ansible<3,>=2.4 molecule<3,>=2.6 apache-libcloud
 before_script:
-  - ansible --version && molecule --version
-
+- ansible --version && molecule --version
 script:
-#  - molecule --debug test --destroy never
-  - molecule test --destroy never
-
+- molecule test --destroy never
 after_script:
-#  - molecule --debug destroy 4
-  - molecule destroy
-  - rm -rf ~/.gcp && rm -f ~/.ssh/${GCE_SSH_FILE}*
+- molecule destroy
+- rm -rf ~/.gcp && rm -f ~/.ssh/${GCE_SSH_FILE}*
+notifications:
+  slack:
+    rooms:
+      secure: K3FE2iLb/uU0Qqf8DXrGezhzYL1TsDVBvHwCRHap6WSSfGPxbaHGoL3dm755Do7NYp+ytFcFiveb+094tDRr31p4wQjpSgrbbpLEeYEOqm9hCzA5Cvv+CBbea0uv1jGpgIFnHQx1e+o+q9RL3jIfSdyhvJxG7H5CXSLR+mqMZPFoAGDAwA6KpuiabwQP0oJYauiarInjw4TWFomABlLRUhoj9sa4NJ5Pz/94sd3RPBDwdnJ9TpMVyDBhS2xqOFQgg1VSvv3N5U5Y8i+4UohLGOUgpvQJo1bWln/8luKemCVyACn2xLlZOUp/+tHuPFUy8cJFPKjf4ftMb7mw3RG6Ny6ZigVreJ0SFXaCwB6CEPjjtCjr3nx9zBjOV7Bxxou4GoMGkzbIq0peKbQYpcq2klc0nmYkM/upHGZW5dmTu4zPjYl+NGdX7IuIM33vIhObBqOVao/2D0Im2IFhFGHHEu1aHC7zw/4yp4Qrq0jRQTuISCokRmZ4PnGQeYVpuNEZ/s/726z2bu0OmgwuwzzsEf6zXTeSiZ0AflqeozfCpJ8Zh8fPcIUpi7oBN0dsafuLNQ1S9qf2dVQPBpFTIZgSL7hrSONmR3nsyNTCVwzR1Bkvs3k1+YyQobZZFf8xfU3KbgHbMn06X/f2dnqji7gx7yLODo/O3jTQY3y//907OqU=
+env:
+  global:
+  - secure: WsdoIQjJBGV4idnsix08dhe4p4RQo8PJOvuF965EvajzCDmRy/wJIgsvRRvvsKymqBVGWWCYIvUX4U0aX1mKZ/tYM605F3LEwlne0pSqZmoWXY3PoYptoyd7yOmcZkRYeAReAME7sHg2RaZLlq9bpSUGNE20AFViu/rVYJP3e99tttm3fbYTfH/Y0UvNkGNy9V7BhHdWOffZliTG604EbgxN8o4BsKpPpdxSo2+q1DZn8BlEPVGOm2oC+gJxC1SAkwlMZK+kQbD84Z3z823vomBQxWhNky4hJP/kg8mPW/SdDn8by37H3nHUfAOIR9OLwfBzKx8vBy3IRtGc1MXb32YNCHftl/hMofbCKuNtSdsGACpf76OnYZ5cNoDOg0TUCRWtGmhdBQy66CnC4zCfAfPfXXBHRs+9JQD5Eb4K2/s1dM8N+DtkUX5sMICHqVD49JDy+omUz2FE1tsFD2sEZ4CYPGxopr59/Ll8bBkjNfiRRusj4qq1rNJ/KV/KaZy/8h5HivK8+sxTXiQPEZqTYuOsYSNCdGMuOF7Tnh2zbZkAtq7ruPHbbDUwJWDjnqf/wrSAuOQwU5I20j7y3mtAmvTizeAVh4rLB6yYCZtmzChgOFWckXrtOSv4Igjqs6w5EuZpwZ1hEkXRmoQprTt1aca1xa5EU+ju1WWYdg2PR0A=
+  - secure: grH94kuQjb1c227w6HBD2HiMhzD9AmsSlMQbVW7HLdnVzuzrC23xwYyKv18LvmvIJWoDIwJ944RSnZkuNXSw+l9FpKGTjJIbTu4l8aopHVr2gI6qQc+1lAezDQUqyfXb173Txvg7PK9hygxfKprY9FAzkfwr1sqqhrZmbDwXJw91Zw50f8LOh1cCZskTldvnbnZLiuf8JP4mJHL7/TygfsSiuToiGIJLh2qNtAp4JVlDKIkRWNyggx4p8Bi+qpUGrUDgo8b/lA3rHTNC3V4nz7XyQqrJATMSF+oq92TGjE2/o5Gy6BkN9OtCAOF0fKukr0EAo38Xvcc048e3gomaFulfwu56bp4J4H+8dqKYMhB4ej6Zkpn7eFhGLj/mYRy14saqugJjN3bIyjA8Itl0mcFuoLzFFolGdnqhlyPaTwkBLNPgmIsojXX3RVkRLx0qu87HYMSwXD+Dciwcty7/SRHhg4ZdGv+OacsX7y7Txyo2qNzseBTgx6XW9UK0sDuhLGUgrQE2syJbnkFPYNh73mV2BGB5y7HadHH0FgvFIQXsrXNYlSe03cVOSUJYWrFqHrix1Yw7YG+x5dKDb4EJLoAIdVC2eBeGwoQesxfsI8qYtE8v8s8WtFxUJNenLpLpowe9xu9N/dlHuZDiN1fzlBssMrQs+Wq2lNPhaoyWE5U=
+  - secure: iedUak10DLfS3ZuCEP0fJB4GoaDNpYUXWL1ByrXrVZ0DQGVT8HSLDRzbLSpl2ZOjUlG5Fi2MlvUDFE//pRw/oQbXUreJPy4f17W8N/cDOncv93Mjbm/p6dOXOWYuMPkx6t5bODy0ZrC2BhC2oPVRlOdXPC6+Re4ZKGwpmY0V8tIWglZ+jr72oJXXQY1xCpmePcnQu7/zzc7AZnGmC5pzK2DdL49UH68TRhmlKbjMN6H3KGXckEesIo7RWKr4MtH32LNp88kDIZPFdh67IMdk32js0vjdqIRNMOBNkLcj/veGGWkNM67g1tTlMbQXjNL938ooyFYfiIc3LQCRtLVOVrDHCbbWLiQUwKnifIU6LrC0IeL+dGQyC+ww52qA6uNIM9C845IvomPISgKRONtIK0FYVk3n4ZAePFY8C8V++cQJlaKylKntlTcQJVzt6Db++EPkIlMbnycgasqPSwQySPWnLOZto2cEfN+LGIMGjVH2DQxt4AGXGOUC2c/0bgSUFw4HRpIZF+7BgsrVUErzpla6HmrwGM9V3oIexImz27Oc5j5EHvfaZ9oBPcHI0mCuZHda5IlHhwjKmqP0uMCqVfa94uuEeXZz0GR29lLoOuP5WL7sG57gXz0eAeQsQPityVq+97fA/ePBJR4T8S8x2yHVu5D/bIsZhYxWxsp4Hes=
+  - secure: iX5otBIDuaya7O5b5XYG7B0531ZKIMjYrpSI1ub7tJEAUAKP8SQsQFG5eLNuO9/VhigIshMGiw70UAy0sv852AEeGLsTHWbMckiPHsuDNfhz73CSf2ZrhvHYJZPIyMhWcPP3/26HKL6rLyCQToaVUn9Yp+Pd/8MCwL8KJsrYh6hVaF5lu8diGbfczd6clw6pSABOxiqRlNL8RW1jl1XsCYu/km7KLQJMIC+njzh1ZrMmcRiUnmakseRnU+NlNSiJz9bUv6KrJ0zC+CRhCWnPWE2NEHBLlOALp7ZzifnaCpmYz6Ub4BlxjI5MRg8fVq7KDRUInlZRohI9pj8BHZJ/uAzDOlf2YmkcvYlUs8r/8W/6xO0Di3qVayc/3bmyWOczSoWuor5tiXtZJAidSyKPiAx1KXtV5Zu4dsGm0qGBoW9iuBNl7BfQUQcgbXR0ubOfWTbAyTCaint5ia/3YI+eEByt8XAYRou8sJosxnJvBNnVvHAlrO0R6zJQnTTBbghdCSWPDpGmqzsguyjHmq2xE/MXgDtSRIVx7FY+X61xIGANU+Ev5b1Zy6SWcYzx6BixMk5Wzrp1d1IEEojw8S2bhinfwCGPKBR3gobakRfnlwd2CtZELSydlCYV014/nKcn2TDtYZJ5lRhIG3OQ156xcxn+dDq69bbTJto5x3oBv7U=
+  - secure: KT0e7w3lKaZkYU4K6Ul2iEAH+p5Gtp2cyzoq4AXXpl877EWG8KMCLNd0zQRiLfh92ZQw5VN1BakcG8hP2JtpRBXgUI+Zj30kzVdpMBIsJq18mVmUSo8MWZlOkG/YtzGI0zjFfztJQVqF12fNRb+4zhcF30PNsj8aQv7ztX3vqZLs/wc1+r2uP4ElCKwkCtrHnfdLynU6APG3nUaZexVPhNss/gz2ya2wqRZQew6NuG7PkChfUxPJUs9Re6Pnmj8yv2gXcYkCdqm6g1BhZGgSRFon38uzqMdv+CHbAUv0evwLsSpkBnYBpeEBWYFL33e4OzhdARW9uBNYSCAaaHjfp+4JEDF+1jhQk+YDKbp7FNTpK1U5U9xHHahpCywvDcGaPB5v+uDfn7z2HdSv58FyooG/rQYngM/g+7EG+WB8c4R3fL55l1xiWHTdkWLJHswckA0y4IzWqv/VjeHA18HfdRt9AgwH1yihxr3eRLnMqbcimPlCJFFzhjjLZKAAsTleaUpU0iEjhLcQ92I7er8vN5q/IRQZwDWbJzec4iAm/TeJ4lMuXwv45GHDHD0eOL44ggl6zPMD9/g93FYfi4lOpWU1VCHVhWmfohlWS6wQnZHoAwYha/xHzy0fnA4sSUK2d37yoGLUDEmNegUAQoNKV3PLrWprAKp6pycWzXNghNI=

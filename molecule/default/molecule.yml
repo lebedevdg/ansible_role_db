@@ -1,15 +1,15 @@
 ---
-#dependency:
-#  name: galaxy
+dependency:
+  name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: gce
 lint:
   name: yamllint
 platforms:
-  - name: instance
-    box: ubuntu/xenial64
+  - name: instance-for-travis
+    zone: europe-north1-b
+    machine_type: f1-micro
+    image: ubuntu-1604-lts
 provisioner:
   name: ansible
   lint:
