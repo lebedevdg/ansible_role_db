@@ -22,6 +22,6 @@ script:
   - molecule test --destroy never
 
 after_script:
-#  - molecule --debug destroy
+#  - molecule --debug destroy 4
   - molecule destroy
   - rm -rf ~/.gcp && rm -f ~/.ssh/${GCE_SSH_FILE}*
