@@ -9,7 +9,7 @@ before_install:
 - mv -f ${GCE_SSH_FILE}* ~/.ssh && chmod 0600 ~/.ssh/${GCE_SSH_FILE}*
 - pwd && ls -a
 install:
-- pip install ansible<3,>=2.4 molecule<3,>=2.6 apache-libcloud
+- pip install -r requirements.txt
 before_script:
 - ansible --version && molecule --version
 script:
